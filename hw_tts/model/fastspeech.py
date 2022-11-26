@@ -412,8 +412,8 @@ class FastSpeech2(BaseModel):
         ### Your code here #TODO
         x, non_pad_mask = self.encoder(src_seq, src_pos)
         print("encoder output shape", x.shape)
-        print("mel_max_len shape", mel_max_len.shape)
-        print("duration shape", duration.shape)
+        print("mel_max_len shape", mel_max_len)
+        print("duration shape", duration)
         if self.training:
             output, duration_predictor_output = self.length_regulator(x, alpha, duration, mel_max_len)
             print("len reg output shape", output.shape)
