@@ -174,7 +174,7 @@ class Trainer(BaseTrainer):
             for i, phn in tqdm(enumerate(self.encoded_test)):
                 mel, path = synthesis(self.model, phn, self.device, self.waveglow, i, speed)
                 self._log_audio(path)
-                image = PIL.Image.open(plot_spectrogram_to_buf(mel))
+                image = PIL.Image.open(plot_spectrogram_to_buf(mel.cpu()))
                 self.writer.add_image(path, ToTensor()(image))
 
 
