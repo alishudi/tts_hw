@@ -72,6 +72,7 @@ class Trainer(BaseTrainer):
         batch["duration"] = torch.stack([sample.int() for sample in batch["duration"]]).to(device).squeeze(0)
         batch["mel_pos"] = torch.stack([sample.long() for sample in batch["mel_pos"]]).to(device).squeeze(0)
         batch["src_pos"] = torch.stack([sample.long() for sample in batch["src_pos"]]).to(device).squeeze(0)
+        batch["mel_max_len"] = batch["mel_max_len"][0]
         return batch
 
     def _clip_grad_norm(self):
