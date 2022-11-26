@@ -33,7 +33,11 @@ class LJspeechDataset(Dataset):
                 return txt
 
     def get_data_to_buffer(self):
-        buffer = list()
+        buffer = {
+            "text": [],
+            "duration_predictor_target": [],
+            "mel_target": [],
+            }
         text = self.process_text('./data/train.txt')
 
         start = time.perf_counter()
@@ -53,8 +57,9 @@ class LJspeechDataset(Dataset):
             duration = torch.from_numpy(duration)
             mel_gt_target = torch.from_numpy(mel_gt_target)
 
-            buffer.append({"text": character, "duration_predictor_target": duration,
-                        "mel_target": mel_gt_target})
+            buffer["text"].append(character)
+            buffer["duration_predictor_target"].append(duration)
+            buffer["mel_target"].append(mel_gt_target)
 
         end = time.perf_counter()
         print("cost {:.2f}s to load all data into buffer.".format(end-start))

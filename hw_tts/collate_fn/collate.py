@@ -36,9 +36,9 @@ def pad_2D_tensor(inputs):
 
 
 def reprocess_tensor(batch, cut_list):
-    texts = [batch[ind]["text"] for ind in cut_list]
-    mel_targets = [batch[ind]["mel_target"] for ind in cut_list]
-    durations = [batch[ind]["duration_predictor_target"] for ind in cut_list]
+    texts = [batch["text"][ind] for ind in cut_list]
+    mel_targets = [batch["mel_target"][ind] for ind in cut_list]
+    durations = [batch["duration_predictor_target"][ind] for ind in cut_list]
 
     length_text = np.array([])
     for text in texts:
@@ -90,9 +90,18 @@ def collate_fn(dataset_items: List[dict], batch_expand_size=32):
     for i in range(batch_expand_size):
         cut_list.append(index_arr[i*real_batchsize:(i+1)*real_batchsize])
 
-    output = list()
+    output = {
+        "text": [],
+        "mel_target": [],
+        "duration": [],
+        "mel_pos": [],
+        "src_pos": [],
+        "mel_max_len": []
+        }
     for i in range(batch_expand_size):
-        output.append(reprocess_tensor(dataset_items, cut_list[i]))
+        out = (reprocess_tensor(dataset_items, cut_list[i]))
+        for name in ["text", "mel_target", "duration", "mel_pos", "src_pos", "mel_max_len"]:
+            output[name].extend(out[name])
 
     return output
 
