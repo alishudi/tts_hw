@@ -266,10 +266,11 @@ def get_non_pad_mask(model_config, seq):
 def get_attn_key_pad_mask(model_config, seq_k, seq_q):
     ''' For masking out the padding part of key sequence. '''
     # Expand to fit the shape of key query attention matrix.
-    print(seq_q)
     len_q = seq_q.size(1)
     padding_mask = seq_k.eq(model_config['PAD'])
-    padding_mask = padding_mask.squeeze(0).expand(-1, len_q, -1)  # b x lq x lk
+    padding_mask = padding_mask.squeeze(0)
+    print(padding_mask.shape)
+    padding_mask = padding_mask.expand(-1, len_q, -1)  # b x lq x lk
 
     return padding_mask
 
