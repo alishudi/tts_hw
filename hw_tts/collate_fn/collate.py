@@ -66,7 +66,7 @@ def reprocess_tensor(batch, cut_list):
     durations = pad_1D_tensor(durations)
     mel_targets = pad_2D_tensor(mel_targets)
 
-    out = {"text": texts,
+    out = {"src_seq": texts,
            "mel_target": mel_targets,
            "duration": durations,
            "mel_pos": mel_pos,
@@ -81,7 +81,7 @@ def collate_fn(dataset_items: List[dict], batch_expand_size=32):
     """
     Collate and pad fields in dataset items
     """
-    len_arr = np.array([d["text"].size(0) for d in dataset_items])
+    len_arr = np.array([d["src_seq"].size(0) for d in dataset_items])
     index_arr = np.argsort(-len_arr)
     batchsize = len(dataset_items)
     real_batchsize = batchsize // batch_expand_size
@@ -91,7 +91,7 @@ def collate_fn(dataset_items: List[dict], batch_expand_size=32):
         cut_list.append(index_arr[i*real_batchsize:(i+1)*real_batchsize])
 
     output = {
-        "text": [],
+        "src_seq": [],
         "mel_target": [],
         "duration": [],
         "mel_pos": [],
@@ -100,7 +100,7 @@ def collate_fn(dataset_items: List[dict], batch_expand_size=32):
         }
     for i in range(batch_expand_size):
         out = (reprocess_tensor(dataset_items, cut_list[i]))
-        for name in ["text", "mel_target", "duration", "mel_pos", "src_pos", "mel_max_len"]:
+        for name in ["src_seq", "mel_target", "duration", "mel_pos", "src_pos", "mel_max_len"]:
             output[name].append(out[name])
 
     return output
