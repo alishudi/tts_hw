@@ -253,9 +253,7 @@ class LengthRegulator(nn.Module):
             return output, duration_predictor_output
         else:
             duration_predictor_output = (duration_predictor_output + 0.5 * alpha).int()
-            print("duration_predictor_output shape", duration_predictor_output.shape)
             output = self.LR(x, duration_predictor_output)
-            print("output LR shape", output.shape)
             mel_pos = torch.stack([torch.Tensor([i + 1 for i in range(output.size(1))])]).long().to(x.device)
             return output, mel_pos
 
@@ -365,8 +363,6 @@ class Decoder(nn.Module):
         non_pad_mask = get_non_pad_mask(self.model_config, enc_pos)
 
         # -- Forward
-        print("enc ceq shape", enc_seq.shape)
-        print("enc pos shape", self.position_enc(enc_pos).shape)
         dec_output = enc_seq + self.position_enc(enc_pos)
 
         for dec_layer in self.layer_stack:
@@ -411,12 +407,8 @@ class FastSpeech2(BaseModel):
     def forward(self, src_seq, src_pos, mel_pos=None, mel_max_len=None, duration=None, alpha=1.0, **batch):
         ### Your code here #TODO
         x, non_pad_mask = self.encoder(src_seq, src_pos)
-        print("encoder output shape", x.shape)
-        print("mel_max_len shape", mel_max_len)
-        print("duration shape", duration)
         if self.training:
             output, duration_predictor_output = self.length_regulator(x, alpha, duration, mel_max_len)
-            print("len reg output shape", output.shape)
             output = self.decoder(output, mel_pos)
             output = self.mask_tensor(output, mel_pos, mel_max_len)
             output = self.mel_linear(output)

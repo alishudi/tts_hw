@@ -130,6 +130,7 @@ class Trainer(BaseTrainer):
             if batch_idx >= self.len_epoch:
                 break
         log = last_train_metrics
+        self.model.eval()
         self._log_predictions()
 
         return log
