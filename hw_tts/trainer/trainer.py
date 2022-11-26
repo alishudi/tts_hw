@@ -137,7 +137,7 @@ class Trainer(BaseTrainer):
         batch = self.move_batch_to_device(batch, self.device)
         if is_train:
             self.optimizer.zero_grad()
-        mel_output, duration_predictor_output = self.model(**batch)
+        mel_output, duration_predictor_output = self.model(device=self.device, **batch)
         batch["mel"] = mel_output
         batch["duration_predicted"] = duration_predictor_output
         batch["mel_loss"], batch["duration_loss"] = self.criterion(**batch)

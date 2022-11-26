@@ -224,9 +224,8 @@ class DurationPredictor(nn.Module):
 class LengthRegulator(nn.Module):
     """ Length Regulator """
 
-    def __init__(self, model_config, device):
+    def __init__(self, model_config):
         super(LengthRegulator, self).__init__()
-        self.device = device
         self.duration_predictor = DurationPredictor(model_config)
 
     def LR(self, x, duration_predictor_output, mel_max_length=None):
@@ -245,7 +244,7 @@ class LengthRegulator(nn.Module):
                 output, (0, 0, 0, mel_max_length-output.size(1), 0, 0))
         return output
 
-    def forward(self, x, alpha=1.0, target=None, mel_max_length=None):
+    def forward(self, x, alpha=1.0, target=None, mel_max_length=None, device):
         ### Your code here
         #TODO ?
         duration_predictor_output = self.duration_predictor(x)
@@ -255,7 +254,7 @@ class LengthRegulator(nn.Module):
         else:
             duration_predictor_output = (duration_predictor_output + 0.5 * alpha).int()
             output = self.LR(x, duration_predictor_output)
-            mel_pos = torch.stack([torch.Tensor([i + 1 for i in range(output.size(1))])]).long().to(self.device)
+            mel_pos = torch.stack([torch.Tensor([i + 1 for i in range(output.size(1))])]).long().to(device)
             return output, mel_pos
 
 
@@ -393,7 +392,7 @@ class FastSpeech2(BaseModel):
         super(FastSpeech2, self).__init__()
 
         self.encoder = Encoder(model_config)
-        self.length_regulator = LengthRegulator(model_config, self.device)
+        self.length_regulator = LengthRegulator(model_config)
         self.decoder = Decoder(model_config)
 
         self.mel_linear = nn.Linear(model_config['decoder_dim'], model_config['num_mels'])
@@ -404,17 +403,17 @@ class FastSpeech2(BaseModel):
         mask = mask.unsqueeze(-1).expand(-1, -1, mel_output.size(-1))
         return mel_output.masked_fill(mask, 0.)
 
-    def forward(self, src_seq, src_pos, mel_pos=None, mel_max_length=None, length_target=None, alpha=1.0, **batch):
+    def forward(self, src_seq, src_pos, device, mel_pos=None, mel_max_length=None, length_target=None, alpha=1.0, **batch):
         ### Your code here #TODO
         x, non_pad_mask = self.encoder(src_seq, src_pos)
         if self.training:
-            output, duration_predictor_output = self.length_regulator(x, alpha, length_target, mel_max_length)
+            output, duration_predictor_output = self.length_regulator(x, alpha, length_target, mel_max_length, device=device)
             output = self.decoder(output, mel_pos)
             output = self.mask_tensor(output, mel_pos, mel_max_length)
             output = self.mel_linear(output)
             return output, duration_predictor_output
         else:
-            output, mel_pos = self.length_regulator(x, alpha)
+            output, mel_pos = self.length_regulator(x, alpha, device=device)
             output = self.decoder(output, mel_pos)
             output = self.mel_linear(output)
             return output
