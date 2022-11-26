@@ -77,7 +77,7 @@ def reprocess_tensor(batch, cut_list):
 
 
 
-def collate_fn(dataset_items: List[dict], batch_expand_size=32):
+def collate_fn(dataset_items: List[dict], batch_expand_size=1):
     """
     Collate and pad fields in dataset items
     """
