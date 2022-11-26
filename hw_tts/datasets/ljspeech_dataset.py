@@ -7,7 +7,7 @@ from tqdm import tqdm
 import torch
 import numpy as np
 import time
-from FastSpeech.text import text_to_sequence
+from text import text_to_sequence
 from torch.utils.data import Dataset
 from hw_tts.utils.parse_config import ConfigParser
 

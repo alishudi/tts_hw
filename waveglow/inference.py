@@ -27,7 +27,7 @@
 import os
 from scipy.io.wavfile import write
 import torch
-from FastSpeech.waveglow.mel2samp import files_to_list, MAX_WAV_VALUE
+from waveglow.mel2samp import files_to_list, MAX_WAV_VALUE
 # from denoiser import Denoiser
 
 

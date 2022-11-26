@@ -13,7 +13,7 @@ from tqdm import tqdm
 from hw_tts.base import BaseTrainer
 from hw_tts.logger.utils import plot_spectrogram_to_buf
 from hw_tts.utils import inf_loop, MetricTracker
-from FastSpeech.text import text_to_sequence
+from text import text_to_sequence
 from hw_tts.synthesis import synthesis
 
 

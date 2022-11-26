@@ -1,6 +1,6 @@
 import numpy as np
 import torch
-from FastSpeech.waveglow.inference import inference
+from waveglow.inference import inference
 
 def synthesis(model, text, device, waveglow, n, speed=1.0):
     text = np.array(text)
