@@ -67,11 +67,11 @@ class Trainer(BaseTrainer):
         Move all necessary tensors to the HPU
         """
         #todo fix
-        batch["src_seq"] = torch.stack([sample.long() for sample in batch["src_seq"]]).to(device)
-        batch["mel_target"] = torch.stack([sample.float() for sample in batch["mel_target"]]).to(device)
-        batch["duration"] = torch.stack([sample.int() for sample in batch["duration"]]).to(device)
-        batch["mel_pos"] = torch.stack([sample.long() for sample in batch["mel_pos"]]).to(device)
-        batch["src_pos"] = torch.stack([sample.long() for sample in batch["src_pos"]]).to(device)
+        batch["src_seq"] = torch.stack([sample.long() for sample in batch["src_seq"]]).to(device).squeeze(0)
+        batch["mel_target"] = torch.stack([sample.float() for sample in batch["mel_target"]]).to(device).squeeze(0)
+        batch["duration"] = torch.stack([sample.int() for sample in batch["duration"]]).to(device).squeeze(0)
+        batch["mel_pos"] = torch.stack([sample.long() for sample in batch["mel_pos"]]).to(device).squeeze(0)
+        batch["src_pos"] = torch.stack([sample.long() for sample in batch["src_pos"]]).to(device).squeeze(0)
         return batch
 
     def _clip_grad_norm(self):
