@@ -402,7 +402,7 @@ class FastSpeech2(BaseModel):
         mask = mask.unsqueeze(-1).expand(-1, -1, mel_output.size(-1))
         return mel_output.masked_fill(mask, 0.)
 
-    def forward(self, src_seq, src_pos, mel_pos=None, mel_max_length=None, length_target=None, alpha=1.0):
+    def forward(self, src_seq, src_pos, mel_pos=None, mel_max_length=None, length_target=None, alpha=1.0, **batch):
         ### Your code here #TODO
         x, non_pad_mask = self.encoder(src_seq, src_pos)
         if self.training:
