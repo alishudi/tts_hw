@@ -226,6 +226,7 @@ class LengthRegulator(nn.Module):
 
     def __init__(self, model_config):
         super(LengthRegulator, self).__init__()
+        self.model_config = model_config
         self.duration_predictor = DurationPredictor(model_config)
 
     def LR(self, x, duration_predictor_output, mel_max_length=None):
@@ -254,7 +255,7 @@ class LengthRegulator(nn.Module):
         else:
             duration_predictor_output = (duration_predictor_output + 0.5 * alpha).int()
             output = self.LR(x, duration_predictor_output)
-            mel_pos = torch.stack([torch.Tensor([i + 1 for i in range(output.size(1))])]).long().to(train_config.device)
+            mel_pos = torch.stack([torch.Tensor([i + 1 for i in range(output.size(1))])]).long().to(self.model_config.device)
             return output, mel_pos
 
 
