@@ -174,14 +174,14 @@ class Trainer(BaseTrainer):
             for i, phn in tqdm(enumerate(self.encoded_test)):
                 mel, path = synthesis(self.model, phn, self.device, self.waveglow, i, speed)
                 self._log_audio(path, path)
-                image = PIL.Image.open(plot_spectrogram_to_buf(mel.detach().numpy()))
+                image = PIL.Image.open(plot_spectrogram_to_buf(mel.detach().cpu().numpy().transpose(-1, -2)))
                 self.writer.add_image(path, ToTensor()(image))
 
 
 
     def _log_spectrogram(self, spectrogram_batch):
         spectrogram = random.choice(spectrogram_batch.cpu())
-        image = PIL.Image.open(plot_spectrogram_to_buf(spectrogram.detach().numpy()))
+        image = PIL.Image.open(plot_spectrogram_to_buf(spectrogram.detach().numpy().transpose(-1, -2)))
         self.writer.add_image("spectrogram", ToTensor()(image))
 
     @torch.no_grad()
