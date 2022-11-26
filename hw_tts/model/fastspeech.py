@@ -363,8 +363,8 @@ class Decoder(nn.Module):
         non_pad_mask = get_non_pad_mask(self.model_config, enc_pos)
 
         # -- Forward
-        print(enc_seq.shape, enc_seq)
-        print(self.position_enc(enc_pos).shape, self.position_enc(enc_pos))
+        print(enc_seq.shape)
+        print(self.position_enc(enc_pos).shape)
         dec_output = enc_seq + self.position_enc(enc_pos)
 
         for dec_layer in self.layer_stack:
@@ -409,8 +409,10 @@ class FastSpeech2(BaseModel):
     def forward(self, src_seq, src_pos, device, mel_pos=None, mel_max_length=None, length_target=None, alpha=1.0, **batch):
         ### Your code here #TODO
         x, non_pad_mask = self.encoder(src_seq, src_pos)
+        print("encoder output shape", x.shape)
         if self.training:
             output, duration_predictor_output = self.length_regulator(x, alpha, length_target, mel_max_length, device=device)
+            print("len reg output shape", output.shape)
             output = self.decoder(output, mel_pos)
             output = self.mask_tensor(output, mel_pos, mel_max_length)
             output = self.mel_linear(output)
