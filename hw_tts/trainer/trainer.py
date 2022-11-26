@@ -180,7 +180,7 @@ class Trainer(BaseTrainer):
 
     def _log_spectrogram(self, spectrogram_batch):
         spectrogram = random.choice(spectrogram_batch.cpu())
-        image = PIL.Image.open(plot_spectrogram_to_buf(spectrogram))
+        image = PIL.Image.open(plot_spectrogram_to_buf(spectrogram.detach().numpy()))
         self.writer.add_image("spectrogram", ToTensor()(image))
 
     @torch.no_grad()
