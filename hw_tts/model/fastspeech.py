@@ -387,7 +387,7 @@ def get_mask_from_lengths(lengths, max_len=None):
 class FastSpeech2(BaseModel):
     """ FastSpeech """
 
-    def __init__(self, model_config, num_mels):
+    def __init__(self, model_config):
         super(FastSpeech2, self).__init__()
 
         self.encoder = Encoder(model_config)
