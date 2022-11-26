@@ -244,7 +244,7 @@ class LengthRegulator(nn.Module):
                 output, (0, 0, 0, mel_max_length-output.size(1), 0, 0))
         return output
 
-    def forward(self, x, alpha=1.0, target=None, mel_max_length=None, device=None):
+    def forward(self, x, alpha=1.0, target=None, mel_max_length=None):
         ### Your code here
         #TODO ?
         duration_predictor_output = self.duration_predictor(x)
@@ -256,7 +256,7 @@ class LengthRegulator(nn.Module):
             print("duration_predictor_output shape", duration_predictor_output.shape)
             output = self.LR(x, duration_predictor_output)
             print("output LR shape", output.shape)
-            mel_pos = torch.stack([torch.Tensor([i + 1 for i in range(output.size(1))])]).long().to(device)
+            mel_pos = torch.stack([torch.Tensor([i + 1 for i in range(output.size(1))])]).long().to(x.device)
             return output, mel_pos
 
 
@@ -408,19 +408,19 @@ class FastSpeech2(BaseModel):
         mask = mask.unsqueeze(-1).expand(-1, -1, mel_output.size(-1))
         return mel_output.masked_fill(mask, 0.)
 
-    def forward(self, src_seq, src_pos, device, mel_pos=None, mel_max_length=None, length_target=None, alpha=1.0, **batch):
+    def forward(self, src_seq, src_pos, mel_pos=None, mel_max_length=None, length_target=None, alpha=1.0, **batch):
         ### Your code here #TODO
         x, non_pad_mask = self.encoder(src_seq, src_pos)
         print("encoder output shape", x.shape)
         if self.training:
-            output, duration_predictor_output = self.length_regulator(x, alpha, length_target, mel_max_length, device=device)
+            output, duration_predictor_output = self.length_regulator(x, alpha, length_target, mel_max_length)
             print("len reg output shape", output.shape)
             output = self.decoder(output, mel_pos)
             output = self.mask_tensor(output, mel_pos, mel_max_length)
             output = self.mel_linear(output)
             return output, duration_predictor_output
         else:
-            output, mel_pos = self.length_regulator(x, alpha, device=device)
+            output, mel_pos = self.length_regulator(x, alpha)
             output = self.decoder(output, mel_pos)
             output = self.mel_linear(output)
             return output
