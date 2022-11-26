@@ -253,7 +253,9 @@ class LengthRegulator(nn.Module):
             return output, duration_predictor_output
         else:
             duration_predictor_output = (duration_predictor_output + 0.5 * alpha).int()
+            print("duration_predictor_output shape", duration_predictor_output.shape)
             output = self.LR(x, duration_predictor_output)
+            print("output LR shape", output.shape)
             mel_pos = torch.stack([torch.Tensor([i + 1 for i in range(output.size(1))])]).long().to(device)
             return output, mel_pos
 
@@ -363,8 +365,8 @@ class Decoder(nn.Module):
         non_pad_mask = get_non_pad_mask(self.model_config, enc_pos)
 
         # -- Forward
-        print(enc_seq.shape)
-        print(self.position_enc(enc_pos).shape)
+        print("enc ceq shape", enc_seq.shape)
+        print("enc pos shape", self.position_enc(enc_pos).shape)
         dec_output = enc_seq + self.position_enc(enc_pos)
 
         for dec_layer in self.layer_stack:
