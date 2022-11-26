@@ -66,7 +66,7 @@ class Trainer(BaseTrainer):
         """
         Move all necessary tensors to the HPU
         """
-        batch["text"] = [sample.long().to(device) for sample in batch["text"]]
+        batch["src_seq"] = [sample.long().to(device) for sample in batch["src_seq"]]
         batch["mel_target"] = [sample.float().to(device) for sample in batch["mel_target"]]
         batch["duration"] = [sample.int().to(device) for sample in batch["duration"]]
         batch["mel_pos"] = [sample.long().to(device) for sample in batch["mel_pos"]]
