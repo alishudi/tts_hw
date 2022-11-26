@@ -259,13 +259,14 @@ class LengthRegulator(nn.Module):
 
 
 #todo mb move to separate file
-def get_non_pad_mask(seq):
+def get_non_pad_mask(model_config, seq):
     assert seq.dim() == 2
     return seq.ne(model_config['PAD']).type(torch.float).unsqueeze(-1)
 
-def get_attn_key_pad_mask(seq_k, seq_q):
+def get_attn_key_pad_mask(model_config, seq_k, seq_q):
     ''' For masking out the padding part of key sequence. '''
     # Expand to fit the shape of key query attention matrix.
+    print(seq_q)
     len_q = seq_q.size(1)
     padding_mask = seq_k.eq(model_config['PAD'])
     padding_mask = padding_mask.unsqueeze(
@@ -278,6 +279,7 @@ class Encoder(nn.Module):
     def __init__(self, model_config):
         super(Encoder, self).__init__()
         
+        self.model_config = model_config
         len_max_seq=model_config['max_seq_len']
         n_position = len_max_seq + 1
         n_layers = model_config['encoder_n_layer']
@@ -308,8 +310,8 @@ class Encoder(nn.Module):
         enc_slf_attn_list = []
 
         # -- Prepare masks
-        slf_attn_mask = get_attn_key_pad_mask(seq_k=src_seq, seq_q=src_seq)
-        non_pad_mask = get_non_pad_mask(src_seq)
+        slf_attn_mask = get_attn_key_pad_mask(self.model_config, seq_k=src_seq, seq_q=src_seq)
+        non_pad_mask = get_non_pad_mask(self.model_config, src_seq)
         
         # -- Forward
         enc_output = self.src_word_emb(src_seq) + self.position_enc(src_pos)
