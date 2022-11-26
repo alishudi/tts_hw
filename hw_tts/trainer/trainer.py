@@ -173,8 +173,8 @@ class Trainer(BaseTrainer):
         for speed in [0.8, 1., 1.3]:
             for i, phn in tqdm(enumerate(self.encoded_test)):
                 mel, path = synthesis(self.model, phn, self.device, self.waveglow, i, speed)
-                self._log_audio(path)
-                image = PIL.Image.open(plot_spectrogram_to_buf(mel.cpu()))
+                self._log_audio(path, path)
+                image = PIL.Image.open(plot_spectrogram_to_buf(mel.detach().numpy()))
                 self.writer.add_image(path, ToTensor()(image))
 
 
@@ -204,8 +204,8 @@ class Trainer(BaseTrainer):
         for metric_name in metric_tracker.keys():
             self.writer.add_scalar(f"{metric_name}", metric_tracker.avg(metric_name))
 
-    def _log_audio(self, audio_path):
-        self.writer.add_audio("audio", audio_path, sample_rate=16000)
+    def _log_audio(self, name, audio_path):
+        self.writer.add_audio(name, audio_path, sample_rate=16000)
         #TODO delete old code
         # argmax_inds = batch["log_probs"][ind].cpu().argmax(-1).numpy()
         # argmax_inds = argmax_inds[: int(batch["log_probs_length"][ind].numpy())]
