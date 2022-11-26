@@ -181,11 +181,11 @@ class DurationPredictor(nn.Module):
     def __init__(self, model_config):
         super(DurationPredictor, self).__init__()
 
-        self.input_size = model_config.encoder_dim
-        self.filter_size = model_config.duration_predictor_filter_size
-        self.kernel = model_config.duration_predictor_kernel_size
-        self.conv_output_size = model_config.duration_predictor_filter_size
-        self.dropout = model_config.dropout
+        self.input_size = model_config['encoder_dim']
+        self.filter_size = model_config['duration_predictor_filter_size']
+        self.kernel = model_config['duration_predictor_kernel_size']
+        self.conv_output_size = model_config['duration_predictor_filter_size']
+        self.dropout = model_config['dropout']
 
         self.conv_net = nn.Sequential(
             Transpose(-1, -2),
@@ -261,13 +261,13 @@ class LengthRegulator(nn.Module):
 #todo mb move to separate file
 def get_non_pad_mask(seq):
     assert seq.dim() == 2
-    return seq.ne(model_config.PAD).type(torch.float).unsqueeze(-1)
+    return seq.ne(model_config['PAD']).type(torch.float).unsqueeze(-1)
 
 def get_attn_key_pad_mask(seq_k, seq_q):
     ''' For masking out the padding part of key sequence. '''
     # Expand to fit the shape of key query attention matrix.
     len_q = seq_q.size(1)
-    padding_mask = seq_k.eq(model_config.PAD)
+    padding_mask = seq_k.eq(model_config['PAD'])
     padding_mask = padding_mask.unsqueeze(
         1).expand(-1, len_q, -1)  # b x lq x lk
 
@@ -278,29 +278,29 @@ class Encoder(nn.Module):
     def __init__(self, model_config):
         super(Encoder, self).__init__()
         
-        len_max_seq=model_config.max_seq_len
+        len_max_seq=model_config['max_seq_len']
         n_position = len_max_seq + 1
-        n_layers = model_config.encoder_n_layer
+        n_layers = model_config['encoder_n_layer']
 
         self.src_word_emb = nn.Embedding(
-            model_config.vocab_size,
-            model_config.encoder_dim,
-            padding_idx=model_config.PAD
+            model_config['vocab_size'],
+            model_config['encoder_dim'],
+            padding_idx=model_config['PAD']
         )
 
         self.position_enc = nn.Embedding(
             n_position,
-            model_config.encoder_dim,
-            padding_idx=model_config.PAD
+            model_config['encoder_dim'],
+            padding_idx=model_config['PAD']
         )
 
         self.layer_stack = nn.ModuleList([FFTBlock(
-            model_config.encoder_dim,
-            model_config.encoder_conv1d_filter_size,
-            model_config.encoder_head,
-            model_config.encoder_dim // model_config.encoder_head,
-            model_config.encoder_dim // model_config.encoder_head,
-            dropout=model_config.dropout
+            model_config['encoder_dim'],
+            model_config['encoder_conv1d_filter_size'],
+            model_config['encoder_head'],
+            model_config['encoder_dim'] // model_config['encoder_head'],
+            model_config['encoder_dim'] // model_config['encoder_head'],
+            dropout=model_config['dropout']
         ) for _ in range(n_layers)])
 
     def forward(self, src_seq, src_pos, return_attns=False):
@@ -333,23 +333,23 @@ class Decoder(nn.Module):
 
         super(Decoder, self).__init__()
 
-        len_max_seq=model_config.max_seq_len
+        len_max_seq=model_config['max_seq_len']
         n_position = len_max_seq + 1
-        n_layers = model_config.decoder_n_layer
+        n_layers = model_config['decoder_n_layer']
 
         self.position_enc = nn.Embedding(
             n_position,
-            model_config.encoder_dim,
-            padding_idx=model_config.PAD,
+            model_config['encoder_dim'],
+            padding_idx=model_config['PAD'],
         )
 
         self.layer_stack = nn.ModuleList([FFTBlock(
-            model_config.encoder_dim,
-            model_config.encoder_conv1d_filter_size,
-            model_config.encoder_head,
-            model_config.encoder_dim // model_config.encoder_head,
-            model_config.encoder_dim // model_config.encoder_head,
-            dropout=model_config.dropout
+            model_config['encoder_dim'],
+            model_config['encoder_conv1d_filter_size'],
+            model_config['encoder_head'],
+            model_config['encoder_dim'] // model_config['encoder_head'],
+            model_config['encoder_dim'] // model_config['encoder_head'],
+            dropout=model_config['dropout']
         ) for _ in range(n_layers)])
 
     def forward(self, enc_seq, enc_pos, return_attns=False):
@@ -394,7 +394,7 @@ class FastSpeech2(BaseModel):
         self.length_regulator = LengthRegulator(model_config)
         self.decoder = Decoder(model_config)
 
-        self.mel_linear = nn.Linear(model_config.decoder_dim, model_config.num_mels)
+        self.mel_linear = nn.Linear(model_config['decoder_dim'], model_config['num_mels'])
 
     def mask_tensor(self, mel_output, position, mel_max_length):
         lengths = torch.max(position, -1)[0]
