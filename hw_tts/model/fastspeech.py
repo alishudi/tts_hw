@@ -363,6 +363,8 @@ class Decoder(nn.Module):
         non_pad_mask = get_non_pad_mask(self.model_config, enc_pos)
 
         # -- Forward
+        print(enc_seq.shape, enc_seq)
+        print(self.position_enc(enc_pos).shape, self.position_enc(enc_pos))
         dec_output = enc_seq + self.position_enc(enc_pos)
 
         for dec_layer in self.layer_stack:
