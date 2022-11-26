@@ -66,12 +66,11 @@ class Trainer(BaseTrainer):
         """
         Move all necessary tensors to the HPU
         """
-        for sample in batch:
-            sample["text"] = sample["text"].astype(torch.long).to(device)
-            sample["mel_target"] = sample["mel_target"].astype(float).to(device)
-            sample["duration"] = sample["duration"].astype(int).to(device)
-            sample["mel_pos"] = sample["mel_pos"].astype(torch.long).to(device)
-            sample["src_pos"] = sample["src_pos"].astype(torch.long).to(device)
+        batch["text"] = [sample.long().to(device) for sample in batch["text"]]
+        batch["mel_target"] = [sample.float().to(device) for sample in batch["mel_target"]]
+        batch["duration"] = [sample.int().to(device) for sample in batch["duration"]]
+        batch["mel_pos"] = [sample.long().to(device) for sample in batch["mel_pos"]]
+        batch["src_pos"] = [sample.long().to(device) for sample in batch["src_pos"]]
         return batch
 
     def _clip_grad_norm(self):
