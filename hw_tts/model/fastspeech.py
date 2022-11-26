@@ -334,6 +334,7 @@ class Decoder(nn.Module):
 
         super(Decoder, self).__init__()
 
+        self.model_config = model_config
         len_max_seq=model_config['max_seq_len']
         n_position = len_max_seq + 1
         n_layers = model_config['decoder_n_layer']
@@ -358,8 +359,8 @@ class Decoder(nn.Module):
         dec_slf_attn_list = []
 
         # -- Prepare masks
-        slf_attn_mask = get_attn_key_pad_mask(seq_k=enc_pos, seq_q=enc_pos)
-        non_pad_mask = get_non_pad_mask(enc_pos)
+        slf_attn_mask = get_attn_key_pad_mask(self.model_config, seq_k=enc_pos, seq_q=enc_pos)
+        non_pad_mask = get_non_pad_mask(self.model_config, enc_pos)
 
         # -- Forward
         dec_output = enc_seq + self.position_enc(enc_pos)
