@@ -11,7 +11,7 @@
     "log_spec": true
   },
   "arch": {
-    "type": "FastSpeech",
+    "type": "FastSpeech2",
     "args": {
       "num_mels": 80,
       "vocab_size": 300,
