@@ -22,7 +22,7 @@ class ScaledDotProductAttention(nn.Module):
         # attn: [ (batch_size * n_heads) x seq_len x seq_len ]
 
         if mask is not None:
-            att = att.masked_fill(attn, mask, -torch.inf)
+            torch.masked_fill(attn, mask, -torch.inf)
 
         attn = self.dropout(self.softmax(attn))
         output = torch.bmm(attn, v)
@@ -260,8 +260,6 @@ class LengthRegulator(nn.Module):
 
 #todo mb move to separate file
 def get_non_pad_mask(model_config, seq):
-    print(seq.shape)
-    print(seq)
     assert seq.dim() == 2
     return seq.ne(model_config['PAD']).type(torch.float).unsqueeze(-1)
 
