@@ -154,8 +154,6 @@ class Trainer(BaseTrainer):
                     self.lr_scheduler.step()
 
         metrics.update("loss", batch["loss"].item())
-        for met in self.train_metrics:
-            metrics.update(met.name, met(**batch))
         return batch
 
     def _progress(self, batch_idx):
