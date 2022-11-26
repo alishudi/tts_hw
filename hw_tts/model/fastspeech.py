@@ -244,7 +244,7 @@ class LengthRegulator(nn.Module):
                 output, (0, 0, 0, mel_max_length-output.size(1), 0, 0))
         return output
 
-    def forward(self, x, alpha=1.0, target=None, mel_max_length=None, device):
+    def forward(self, x, alpha=1.0, target=None, mel_max_length=None, device=None):
         ### Your code here
         #TODO ?
         duration_predictor_output = self.duration_predictor(x)
