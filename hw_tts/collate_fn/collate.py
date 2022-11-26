@@ -101,7 +101,7 @@ def collate_fn(dataset_items: List[dict], batch_expand_size=32):
     for i in range(batch_expand_size):
         out = (reprocess_tensor(dataset_items, cut_list[i]))
         for name in ["text", "mel_target", "duration", "mel_pos", "src_pos", "mel_max_len"]:
-            output[name].extend(out[name])
+            output[name].append(out[name])
 
     return output
 
