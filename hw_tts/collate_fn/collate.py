@@ -38,7 +38,7 @@ def pad_2D_tensor(inputs):
 def reprocess_tensor(batch, cut_list):
     texts = [batch[ind]["text"] for ind in cut_list]
     mel_targets = [batch[ind]["mel_target"] for ind in cut_list]
-    durations = [batch[ind]["duration"] for ind in cut_list]
+    durations = [batch[ind]["duration_predictor_target"] for ind in cut_list]
 
     length_text = np.array([])
     for text in texts:
