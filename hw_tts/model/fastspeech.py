@@ -260,6 +260,8 @@ class LengthRegulator(nn.Module):
 
 #todo mb move to separate file
 def get_non_pad_mask(model_config, seq):
+    print(seq.shape)
+    print(seq)
     assert seq.dim() == 2
     return seq.ne(model_config['PAD']).type(torch.float).unsqueeze(-1)
 
@@ -268,9 +270,7 @@ def get_attn_key_pad_mask(model_config, seq_k, seq_q):
     # Expand to fit the shape of key query attention matrix.
     len_q = seq_q.size(1)
     padding_mask = seq_k.eq(model_config['PAD'])
-    print('prepadding shape', padding_mask.shape)
     padding_mask = padding_mask.squeeze(0).unsqueeze(1)
-    print('padding shape', padding_mask.shape)
     padding_mask = padding_mask.expand(-1, len_q, -1)  # b x lq x lk
 
     return padding_mask
