@@ -12,7 +12,7 @@ from hw_tts.utils import prepare_device
 from hw_tts.utils.object_loading import get_dataloaders
 from hw_tts.utils.parse_config import ConfigParser
 from hw_tts.utils import get_WaveGlow
-from FastSpeech import glow
+from FastSpeech import glow, waveglow
 
 import os
 

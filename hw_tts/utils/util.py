@@ -7,7 +7,7 @@ import pandas as pd
 import torch
 import os
 
-from FastSpeech import glow
+from FastSpeech import glow, waveglow
 
 ROOT_PATH = Path(__file__).absolute().resolve().parent.parent.parent
 
