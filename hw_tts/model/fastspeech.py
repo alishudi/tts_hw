@@ -2,7 +2,7 @@ from torch import nn
 from torch.nn import Sequential
 import torch
 import numpy as np
-import torch.functional as F
+import torch.nn.functional as F
 
 from hw_tts.base import BaseModel
 
