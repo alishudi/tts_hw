@@ -173,9 +173,10 @@ class Trainer(BaseTrainer):
         for speed in [0.8, 1., 1.3]:
             for i, phn in tqdm(enumerate(self.encoded_test)):
                 mel, path = synthesis(self.model, phn, self.device, self.waveglow, i, speed)
-                self._log_audio(path, path)
+                name = f'i={i} s={speed}'
+                self._log_audio('audio ' + name, path)
                 image = PIL.Image.open(plot_spectrogram_to_buf(mel.detach().cpu().numpy().squeeze(0).transpose(-1, -2)))
-                self.writer.add_image(path, ToTensor()(image))
+                self.writer.add_image('melspec ' + name, ToTensor()(image))
 
 
 
