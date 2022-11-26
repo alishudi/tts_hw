@@ -21,3 +21,4 @@ https://github.com/kpu/kenlm/archive/master.zip
 
 inflect==0.2.5
 hparams
+unidecode

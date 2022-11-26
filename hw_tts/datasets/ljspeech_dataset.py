@@ -9,11 +9,12 @@ import numpy as np
 import time
 from FastSpeech.text import text_to_sequence
 from torch.utils.data import Dataset
+from hw_tts.utils.parse_config import ConfigParser
 
 logger = logging.getLogger(__name__)
 
 class LJspeechDataset(Dataset):
-    def __init__(self):
+    def __init__(self, config_parser: ConfigParser):
         self.buffer = self.get_data_to_buffer()
         self.length_dataset = len(self.buffer)
 
@@ -36,6 +37,7 @@ class LJspeechDataset(Dataset):
         text = self.process_text('./data/train.txt')
 
         start = time.perf_counter()
+        print("Loading data to the buffer")
         for i in tqdm(range(len(text))):
 
             mel_gt_name = os.path.join(

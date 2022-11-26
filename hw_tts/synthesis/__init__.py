@@ -1,4 +1,4 @@
-from hw_tts.synthesis.synthesis.py import synthesis
+from hw_tts.synthesis.synthesis import synthesis
 
 __all__ = [
     "synthesis"

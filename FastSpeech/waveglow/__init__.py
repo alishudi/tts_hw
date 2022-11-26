@@ -1,2 +1,2 @@
-import waveglow.inference
-import waveglow.mel2samp
+import FastSpeech.waveglow.inference
+import FastSpeech.waveglow.mel2samp
