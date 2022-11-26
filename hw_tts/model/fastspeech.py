@@ -224,8 +224,9 @@ class DurationPredictor(nn.Module):
 class LengthRegulator(nn.Module):
     """ Length Regulator """
 
-    def __init__(self, model_config):
+    def __init__(self, model_config, device):
         super(LengthRegulator, self).__init__()
+        self.device = device
         self.duration_predictor = DurationPredictor(model_config)
 
     def LR(self, x, duration_predictor_output, mel_max_length=None):
@@ -392,7 +393,7 @@ class FastSpeech2(BaseModel):
         super(FastSpeech2, self).__init__()
 
         self.encoder = Encoder(model_config)
-        self.length_regulator = LengthRegulator(model_config)
+        self.length_regulator = LengthRegulator(model_config, self.device)
         self.decoder = Decoder(model_config)
 
         self.mel_linear = nn.Linear(model_config['decoder_dim'], model_config['num_mels'])
