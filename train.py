@@ -11,7 +11,7 @@ from hw_tts.trainer import Trainer
 from hw_tts.utils import prepare_device
 from hw_tts.utils.object_loading import get_dataloaders
 from hw_tts.utils.parse_config import ConfigParser
-from FastSpeech.utils import get_WaveGlow
+from hw_tts.utils import get_WaveGlow
 import os
 
 warnings.filterwarnings("ignore", category=UserWarning)

@@ -11,7 +11,7 @@ dont forget to add downloading stuff to test.py
 
 dataloaders seem like they should work with tts
 delete tests
-mb audio folder from fastspeech isnt needed
+mb audio folder and utils from fastspeech isnt needed
 Default batch_size=16
 transtransform_input_lengths is probably useless
 
