@@ -14,8 +14,6 @@ def pad_1D_tensor(inputs):
         return x_padded
 
     max_len = max((len(x) for x in inputs))
-    print(inputs)
-    print([len(x) for x in inputs])
     padded = torch.stack([pad_data(x, max_len) for x in inputs])
 
     return padded
@@ -68,6 +66,8 @@ def reprocess_tensor(batch, cut_list):
     texts = pad_1D_tensor(texts)
     durations = pad_1D_tensor(durations)
     mel_targets = pad_2D_tensor(mel_targets)
+    print('=====================')
+    print(energies)
     energies = pad_1D_tensor(energies.squeeze(0))
 
     out = {"src_seq": texts,
