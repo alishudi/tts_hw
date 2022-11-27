@@ -68,12 +68,16 @@ class Energy(nn.Module):
         energy_min = np.load(ROOT_PATH / "data" / "energy_min.npy")
         energy_max = np.load(ROOT_PATH / "data" / "energy_max.npy")
         self.bins = torch.Tensor(np.linspace(energy_min - 1e-3, energy_max + 1e-3, num = 257))
+        self.debug = -1
 
     def forward(self, x, alpha_e=1.0, target=None):
+        self.debug += 1
+        print(self.debug)
         energy_predictor_output = self.energy_predictor(x)
         if target is not None:
             energy_quantized = torch.bucketize(target, self.bins.to(x.device))
             energy_embedding = self.embedding(energy_quantized)
+            print(self.debug)
             return energy_embedding, energy_predictor_output
         else:
             energy_predictor_output = ((energy_predictor_output + 0.5) * alpha_e).int()
