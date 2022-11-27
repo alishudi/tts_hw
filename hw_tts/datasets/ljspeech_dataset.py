@@ -52,6 +52,7 @@ class LJspeechDataset(Dataset):
                 text_to_sequence(character, ['english_cleaners']))
             energy = np.load(os.path.join(
                 "./data/energies", str(i)+".npy"))
+            energy = energy.squeeze(0)
 
             character = torch.from_numpy(character)
             duration = torch.from_numpy(duration)
