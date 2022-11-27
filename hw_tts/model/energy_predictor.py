@@ -72,11 +72,11 @@ class Energy(nn.Module):
     def forward(self, x, alpha_e=1.0, target=None):
         energy_predictor_output = self.energy_predictor(x)
         if target is not None:
-            energy_quantized = torch.tensor(np.digitize(target, self.bins))
+            energy_quantized = torch.bucketize(target, self.bins)
             energy_embedding = self.embedding(energy_quantized)
             return energy_embedding, energy_predictor_output
         else:
             energy_predictor_output = ((energy_predictor_output + 0.5) * alpha_e).int()
-            energy_quantized = torch.tensor(np.digitize(energy_predictor_output, self.bins))
+            energy_quantized = torch.bucketize(energy_predictor_output, self.bins)
             energy_embedding = self.embedding(energy_quantized)
             return energy_embedding, energy_predictor_output
