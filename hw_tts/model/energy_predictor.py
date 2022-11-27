@@ -68,26 +68,14 @@ class Energy(nn.Module):
         energy_max = np.load(ROOT_PATH / "data" / "energy_max.npy")
         self.bins = np.linspace(energy_min - 1e-3, energy_max + 1e-3, num = 257)
 
-    def forward(self, x, alpha=1.0, target=None):
+    def forward(self, x, alpha_e=1.0, target=None):
         energy_predictor_output = self.energy_predictor(x)
         if target is not None:
             energy_quantized = torch.tensor(np.digitize(target, self.bins))
             energy_embedding = self.embedding(energy_quantized)
             return energy_embedding, energy_predictor_output
         else:
-            energy_predictor_output = ((energy_predictor_output + 0.5) * alpha).int()
+            energy_predictor_output = ((energy_predictor_output + 0.5) * alpha_e).int()
             energy_quantized = torch.tensor(np.digitize(energy_predictor_output, self.bins))
             energy_embedding = self.embedding(energy_quantized)
             return energy_embedding, energy_predictor_output
-
-
-    # def forward(self, x, alpha=1.0, target=None, mel_max_length=None):
-    #     duration_predictor_output = self.duration_predictor(x)
-    #     if target is not None:
-    #         output = self.LR(x, target, mel_max_length)
-    #         return output, duration_predictor_output
-    #     else:
-    #         duration_predictor_output = ((duration_predictor_output + 0.5) * alpha).int()
-    #         output = self.LR(x, duration_predictor_output)
-    #         mel_pos = torch.stack([torch.Tensor([i + 1 for i in range(output.size(1))])]).long().to(x.device)
-    #         return output, mel_pos

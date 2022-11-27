@@ -58,10 +58,15 @@ def main(config, out_file):
 
     with torch.no_grad():
         #TODO add pitch and energy
+        for energy in [0.8, 1., 1.2]:
+            for i, phn in tqdm(enumerate(encoded_test)):
+                mel, path = synthesis(model, phn, device, waveglow, i, alpha_e=energy)
+                name = f'i={i} s={1} e={energy}'
+                writer.add_audio('audio ' + name, path, sample_rate=16000)
         for speed in [0.8, 1., 1.2]:
             for i, phn in tqdm(enumerate(encoded_test)):
-                mel, path = synthesis(model, phn, device, waveglow, i, speed)
-                name = f'i={i} s={speed}'
+                mel, path = synthesis(model, phn, device, waveglow, i, alpha=speed)
+                name = f'i={i} s={speed} e={1}'
                 writer.add_audio('audio ' + name, path, sample_rate=16000)
                 # image = PIL.Image.open(plot_spectrogram_to_buf(mel.detach().cpu().numpy().squeeze(0).transpose(-1, -2)))
                 # self.writer.add_image('melspec ' + name, ToTensor()(image))
