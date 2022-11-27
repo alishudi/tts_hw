@@ -11,6 +11,10 @@ from hw_tts.trainer import Trainer
 from hw_tts.utils import ROOT_PATH
 from hw_tts.utils.object_loading import get_dataloaders
 from hw_tts.utils.parse_config import ConfigParser
+from hw_tts.utils import get_WaveGlow
+from hw_tts.synthesis import synthesis
+from text import text_to_sequence
+from hw_tts.logger import get_visualizer
 
 DEFAULT_CHECKPOINT_PATH = ROOT_PATH / "default_test_model" / "checkpoint.pth"
 
@@ -39,37 +43,33 @@ def main(config, out_file):
     model = model.to(device)
     model.eval()
 
-    results = []
+    #loading pretrained WaveGlow model
+    waveglow = get_WaveGlow()
+    waveglow = waveglow.cuda()
+
+    #TODO add custom test sample support
+    test_samples = [
+            "A defibrillator is a device that gives a high energy electric shock to the heart of someone who is in cardiac arrest",
+            "Massachusetts Institute of Technology may be best known for its math, science and engineering education", 
+            "Wasserstein distance or Kantorovich Rubinstein metric is a distance function defined between probability distributions on a given metric space"
+            ]
+    encoded_test = list(text_to_sequence(test, ['english_cleaners']) for test in test_samples)
+
+    logger = config.get_logger("trainer")
+    cfg_trainer = config["trainer"]
+    writer = get_visualizer(config, logger, cfg_trainer["visualize"])
 
     with torch.no_grad():
-        for batch_num, batch in enumerate(tqdm(dataloaders["test"])):
-            batch = Trainer.move_batch_to_device(batch, device)
-            output = model(**batch)
-            if type(output) is dict:
-                batch.update(output)
-            else:
-                batch["logits"] = output
-            batch["log_probs"] = torch.log_softmax(batch["logits"], dim=-1)
-            batch["log_probs_length"] = model.transform_input_lengths(
-                batch["spectrogram_length"]
-            )
-            batch["probs"] = batch["log_probs"].exp().cpu()
-            batch["argmax"] = batch["probs"].argmax(-1)
-            for i in range(len(batch["text"])):
-                argmax = batch["argmax"][i]
-                argmax = argmax[: int(batch["log_probs_length"][i])]
-                results.append(
-                    {
-                        "ground_trurh": batch["text"][i],
-                        # "pred_text_argmax": text_encoder.ctc_decode(argmax.cpu().numpy()),
-                        # "pred_text_beam_search": text_encoder.ctc_beam_search(
-                        #     batch["probs"][i].cpu().detach().numpy(), batch["log_probs_length"][i], beam_size=200
-                        # )[:10],
-                    }
-                )
-    with Path(out_file).open("w") as f:
-        json.dump(results, f, indent=2)
+        #TODO add pitch and energy
+        for speed in [0.8, 1., 1.2]:
+            for i, phn in tqdm(enumerate(encoded_test)):
+                mel, path = synthesis(model, phn, device, waveglow, i, speed)
+                name = f'i={i} s={speed}'
+                writer.add_audio('audio ' + name, path, sample_rate=16000)
+                # image = PIL.Image.open(plot_spectrogram_to_buf(mel.detach().cpu().numpy().squeeze(0).transpose(-1, -2)))
+                # self.writer.add_image('melspec ' + name, ToTensor()(image))
 
+    
 
 if __name__ == "__main__":
     args = argparse.ArgumentParser(description="PyTorch Template")
@@ -140,30 +140,9 @@ if __name__ == "__main__":
         with Path(args.config).open() as f:
             config.config.update(json.load(f))
 
-    # if `--test-data-folder` was provided, set it as a default test set
-    if args.test_data_folder is not None:
-        test_data_folder = Path(args.test_data_folder).absolute().resolve()
-        assert test_data_folder.exists()
-        config.config["data"] = {
-            "test": {
-                "batch_size": args.batch_size,
-                "num_workers": args.jobs,
-                "datasets": [
-                    {
-                        "type": "CustomDirAudioDataset",
-                        "args": {
-                            "audio_dir": str(test_data_folder / "audio"),
-                            "transcription_dir": str(
-                                test_data_folder / "transcriptions"
-                            ),
-                        },
-                    }
-                ],
-            }
-        }
 
-    assert config.config.get("data", {}).get("test", None) is not None
-    config["data"]["test"]["batch_size"] = args.batch_size
-    config["data"]["test"]["n_jobs"] = args.jobs
+    # assert config.config.get("data", {}).get("test", None) is not None
+    # config["data"]["test"]["batch_size"] = args.batch_size
+    # config["data"]["test"]["n_jobs"] = args.jobs
 
     main(config, args.output)

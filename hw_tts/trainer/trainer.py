@@ -207,13 +207,3 @@ class Trainer(BaseTrainer):
 
     def _log_audio(self, name, audio_path):
         self.writer.add_audio(name, audio_path, sample_rate=16000)
-        #TODO delete old code
-        # argmax_inds = batch["log_probs"][ind].cpu().argmax(-1).numpy()
-        # argmax_inds = argmax_inds[: int(batch["log_probs_length"][ind].numpy())]
-        # decoded_text = self.text_encoder.ctc_decode(argmax_inds)
-        # target = BaseTextEncoder.normalize_text(batch["text"][ind])
-        # rows = {ind: {
-        #     'target' : target,
-        #     'prediction' : decoded_text
-        #     }}
-        # self.writer.add_table("audio_prediction", pd.DataFrame.from_dict(rows, orient="index"))

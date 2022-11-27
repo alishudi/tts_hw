@@ -17,4 +17,4 @@ def synthesis(model, text, device, waveglow, n, speed=1.0):
     return mel, path
 
             
-            
+#TODO update all           
