@@ -67,7 +67,7 @@ class Energy(nn.Module):
         self.energy_predictor = EnergyPredictor(model_config)
         energy_min = np.load(ROOT_PATH / "data" / "energy_min.npy")
         energy_max = np.load(ROOT_PATH / "data" / "energy_max.npy")
-        self.bins = np.linspace(energy_min - 1e-3, energy_max + 1e-3, num = 257)
+        self.bins = torch.Tensor(np.linspace(energy_min - 1e-3, energy_max + 1e-3, num = 257))
 
     def forward(self, x, alpha_e=1.0, target=None):
         energy_predictor_output = self.energy_predictor(x)
