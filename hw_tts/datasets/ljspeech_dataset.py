@@ -70,11 +70,10 @@ class LJspeechDataset(Dataset):
             audio_tensor, sr = torchaudio.load(self.waw_paths[i])
             audio_tensor = audio_tensor[0:1, :]
             energy = STFT.calc_energy(audio_tensor)
-            print(energy.shape, energy)
-            if energy < energy_min:
-                energy_min = energy
-            if energy > energy_max:
-                energy_max = energy
+            if torch.min(energy) < energy_min:
+                energy_min = torch.min(energy)
+            if torch.max(energy) > energy_max:
+                energy_max = torch.max(energy)
 
             character = torch.from_numpy(character)
             duration = torch.from_numpy(duration)
