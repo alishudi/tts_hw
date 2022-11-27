@@ -84,8 +84,9 @@ class WanDBWriter:
             self._scalar_name(scalar_name): hist
         }, step=self.step)
 
-    def add_checkpoint(self, filename):
+    def add_checkpoint(self, filename, config_path):
         self.wandb.save(filename)
+        self.wandb.save(config_path)
 
     def add_table(self, table_name, table: pd.DataFrame):
         self.wandb.log({self._scalar_name(table_name): wandb.Table(dataframe=table)},
