@@ -68,7 +68,7 @@ def reprocess_tensor(batch, cut_list):
     texts = pad_1D_tensor(texts)
     durations = pad_1D_tensor(durations)
     mel_targets = pad_2D_tensor(mel_targets)
-    energies = pad_1D_tensor(energies)
+    energies = pad_1D_tensor(energies.squeeze(0))
 
     out = {"src_seq": texts,
            "mel_target": mel_targets,

@@ -33,8 +33,8 @@ def calc_energies():
 
     energy_min, energy_max = np.inf, -np.inf
 
+    STFT = TacotronSTFT()
     for i in tqdm(range(len(text))):
-        STFT = TacotronSTFT()
         audio_tensor, sr = torchaudio.load(waw_paths[i])
         audio_tensor = audio_tensor[0:1, :]
         energy = STFT.calc_energy(audio_tensor)

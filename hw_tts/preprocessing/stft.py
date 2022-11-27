@@ -163,4 +163,4 @@ class TacotronSTFT(torch.nn.Module):
         "Calculates energy from a batch of waves"
         magnitudes, _ = self.stft_fn.transform(y)
         energy = torch.norm(magnitudes.data, p=2, dim=1)
-        return energy.squeeze(1)
+        return energy
