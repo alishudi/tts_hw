@@ -67,6 +67,7 @@ class Trainer(BaseTrainer):
         Move all necessary tensors to the HPU
         """
         #todo fix
+        print(batch.keys())
         batch["src_seq"] = torch.stack([sample.long() for sample in batch["src_seq"]]).to(device).squeeze(0)
         batch["mel_target"] = torch.stack([sample.float() for sample in batch["mel_target"]]).to(device).squeeze(0)
         batch["duration"] = torch.stack([sample.int() for sample in batch["duration"]]).to(device).squeeze(0)
