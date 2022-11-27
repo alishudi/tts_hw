@@ -62,7 +62,8 @@ class EnergyPredictor(nn.Module):
 
 class Energy(nn.Module):
     def __init__(self, model_config):
-        self.embedding = nn.Embedding(256, model_config['encoder_dim'])
+        super(Energy, self).__init__()
+        self.embedding = nn.Embedding(model_config['duration_predictor_filter_size'], model_config['encoder_dim'])
         self.energy_predictor = EnergyPredictor(model_config)
         energy_min = np.load(ROOT_PATH / "data" / "energy_min.npy")
         energy_max = np.load(ROOT_PATH / "data" / "energy_max.npy")
