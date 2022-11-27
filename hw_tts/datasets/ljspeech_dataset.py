@@ -17,10 +17,10 @@ logger = logging.getLogger(__name__)
 
 class LJspeechDataset(Dataset):
     def __init__(self, config_parser: ConfigParser):
-        self.buffer = self.get_data_to_buffer()
-        self.length_dataset = len(self.buffer)
         self.data_dir = ROOT_PATH / "data" / "LJSpeech-1.1"
         self.waw_paths = self.get_waw_paths()
+        self.buffer = self.get_data_to_buffer()
+        self.length_dataset = len(self.buffer)
 
     def __len__(self):
         return self.length_dataset
