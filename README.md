@@ -14,7 +14,7 @@ delete tests
 mb audio folder and utils from fastspeech isnt needed
 Default batch_size=16
 
-
+add calc_energies to installation
 
 # report 
 changed mhead attention to pre norm, nothing changed
