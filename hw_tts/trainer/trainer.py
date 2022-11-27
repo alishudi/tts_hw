@@ -73,6 +73,7 @@ class Trainer(BaseTrainer):
         batch["mel_pos"] = torch.stack([sample.long() for sample in batch["mel_pos"]]).to(device).squeeze(0)
         batch["src_pos"] = torch.stack([sample.long() for sample in batch["src_pos"]]).to(device).squeeze(0)
         batch["mel_max_len"] = batch["mel_max_len"][0]
+        batch["energy"] = torch.stack([sample.long() for sample in batch["energy"]]).to(device).squeeze(0)
         return batch
 
     def _clip_grad_norm(self):
@@ -139,11 +140,12 @@ class Trainer(BaseTrainer):
         batch = self.move_batch_to_device(batch, self.device)
         if is_train:
             self.optimizer.zero_grad()
-        mel_output, duration_predictor_output = self.model(**batch)
+        mel_output, duration_predictor_output, energy_predictor_output = self.model(**batch)
         batch["mel"] = mel_output
         batch["duration_predicted"] = duration_predictor_output
-        batch["mel_loss"], batch["duration_loss"] = self.criterion(**batch)
-        batch["loss"] = batch["mel_loss"] + batch["duration_loss"]
+        batch["energy_predicted"] = energy_predictor_output
+        batch["mel_loss"], batch["duration_loss"], batch["energy_loss"] = self.criterion(**batch)
+        batch["loss"] = batch["mel_loss"] + batch["duration_loss"] + batch["energy_loss"]
         if is_train:
             batch["loss"].backward()
             self._clip_grad_norm()

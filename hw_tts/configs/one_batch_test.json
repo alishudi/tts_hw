@@ -30,13 +30,14 @@
         "duration_predictor_filter_size": 256,
         "duration_predictor_kernel_size": 3,
         "dropout": 0.1,
+        "variance_dropout": 0.5,
         "PAD": 0
       }
     }
   },
   "data": {
     "train": {
-      "batch_size": 64,
+      "batch_size": 48,
       "num_workers": 0,
       "datasets": [
         {

@@ -7,13 +7,13 @@ rewrite LN in tranfsormer, check links in ipynb about it
 delete val/eval
 add paths from TrainConfig to configs
 dont forget to add downloading stuff to test.py
+add separate dropout for variance 
 # TODO
 
-dataloaders seem like they should work with tts
 delete tests
 mb audio folder and utils from fastspeech isnt needed
 Default batch_size=16
-transtransform_input_lengths is probably useless
+
 
 
 # report 
