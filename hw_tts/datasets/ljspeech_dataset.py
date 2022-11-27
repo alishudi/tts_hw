@@ -42,7 +42,7 @@ class LJspeechDataset(Dataset):
         with csv_path.open() as f:
             for line in f:
                 waw_id = line.split('|')[0]
-                waw_paths.append(self.data_dir / 'waws' / f"{waw_id}.wav")
+                waw_paths.append(self.data_dir / 'wavs' / f"{waw_id}.wav")
         return waw_paths
 
 
