@@ -67,7 +67,7 @@ class Pitch(nn.Module):
         self.pitch_predictor = PitchPredictor(model_config)
         pitch_min = np.load(ROOT_PATH / "small data" / "pitch_min.npy")
         pitch_max = np.load(ROOT_PATH / "small data" / "pitch_max.npy")
-        self.bins = torch.Tensor(np.linspace(pitch_min - 1e-3, pitch_max + 1e-3, num = 256)) # pitches are already in log scale
+        self.bins = torch.Tensor(np.linspace(pitch_min - 1e-3, pitch_max + 1e-3, num = 255)) # pitches are already in log scale
  
     def forward(self, x, alpha_p=1.0, target=None):
         pitch_predictor_output = self.pitch_predictor(x)
