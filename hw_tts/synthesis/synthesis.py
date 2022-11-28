@@ -2,7 +2,7 @@ import numpy as np
 import torch
 from waveglow.inference import inference
 
-def synthesis(model, text, device, waveglow, n, speed=1.0, alpha_e=1.0):
+def synthesis(model, text, device, waveglow, n, speed=1.0, alpha_e=1.0, alpha_p=1.0):
     text = np.array(text)
     text = np.stack([text])
     src_pos = np.array([i+1 for i in range(text.shape[1])])
@@ -11,10 +11,9 @@ def synthesis(model, text, device, waveglow, n, speed=1.0, alpha_e=1.0):
     src_pos = torch.from_numpy(src_pos).long().to(device)
     
     with torch.no_grad():
-        mel = model.forward(sequence, src_pos, alpha=speed, alpha_e=alpha_e)
-    path = f"results/s={speed}_{n}_waveglow.wav"
+        mel = model.forward(sequence, src_pos, alpha=speed, alpha_e=alpha_e, alpha_p=alpha_p)
+    path = f"results/s={speed}_{n}_e={e}_p={p}.wav"
     inference(mel.contiguous().transpose(1, 2), waveglow, path)
     return mel, path
 
-            
-#TODO update all           
+       

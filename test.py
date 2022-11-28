@@ -57,23 +57,31 @@ def main(config, out_file):
     writer = get_visualizer(config, logger, cfg_trainer["visualize"])
 
     with torch.no_grad():
-        #TODO add pitch
         for i, phn in tqdm(enumerate(encoded_test)):
                 mel, path = synthesis(model, phn, device, waveglow, i)
-                name = f'track={i} speed={1} energy={1}'
+                name = f'track={i} speed={1} energy={1} pitch={1}'
                 writer.add_audio('audio ' + name, path, sample_rate=22050)
         for energy in [0.8, 1.2]:
             for i, phn in tqdm(enumerate(encoded_test)):
                 mel, path = synthesis(model, phn, device, waveglow, i, alpha_e=energy)
-                name = f'track={i} speed={1} energy={energy}'
+                name = f'track={i} speed={1} energy={energy} pitch={1}'
                 writer.add_audio('audio ' + name, path, sample_rate=22050)
         for speed in [0.8, 1.2]:
             for i, phn in tqdm(enumerate(encoded_test)):
                 mel, path = synthesis(model, phn, device, waveglow, i, speed=speed)
-                name = f'track={i} speed={2-speed} energy={1}'
+                name = f'track={i} speed={2-speed} energy={1} pitch={1}'
                 writer.add_audio('audio ' + name, path, sample_rate=22050)
-                # image = PIL.Image.open(plot_spectrogram_to_buf(mel.detach().cpu().numpy().squeeze(0).transpose(-1, -2)))
-                # self.writer.add_image('melspec ' + name, ToTensor()(image))
+        for pitch in [0.8, 1.2]:
+            for i, phn in tqdm(enumerate(encoded_test)):
+                mel, path = synthesis(model, phn, device, waveglow, i, alpha_p=pitch)
+                name = f'track={i} speed={1} energy={1} pitch={pitch}'
+                writer.add_audio('audio ' + name, path, sample_rate=22050)
+        for three in [0.8, 1.2]:
+            for i, phn in tqdm(enumerate(encoded_test)):
+                mel, path = synthesis(model, phn, device, waveglow, i, speed=three, alpha_e=three, alpha_p=three)
+                name = f'track={i} speed={three} energy={three} pitch={three}'
+                writer.add_audio('audio ' + name, path, sample_rate=22050)
+
 
     
 
