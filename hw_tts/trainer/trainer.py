@@ -163,6 +163,7 @@ class Trainer(BaseTrainer):
         metrics.update("mel_loss", batch["mel_loss"].item())
         metrics.update("duration_loss", batch["duration_loss"].item())
         metrics.update("energy_loss", batch["energy_loss"].item())
+        metrics.update("pitch_loss", batch["pitch_loss"].item())
         return batch
 
     def _progress(self, batch_idx):

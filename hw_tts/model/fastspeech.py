@@ -162,7 +162,7 @@ class FastSpeech2(BaseModel):
             output, duration_predictor_output, alignment = self.length_regulator(x, alpha, duration, mel_max_len)
             energy_embedding, energy_predictor_output = self.energy_predictor(output, alpha_e=alpha_e, target=energy)
             pitch_embedding, pitch_predictor_output = self.pitch_predictor(output, alpha_p=alpha_p, target=pitch)
-            print(pitch_embedding.shape, energy_embedding.shape)
+            print(pitch_embedding.shape, energy_embedding.shape, output.shape, pitch.shape, energy.shape)
             output = self.decoder(output, mel_pos, energy_embedding, pitch_embedding)
             output = self.mask_tensor(output, mel_pos, mel_max_len)
             output = self.mel_linear(output)
