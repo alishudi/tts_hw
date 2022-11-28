@@ -61,17 +61,17 @@ def main(config, out_file):
         for i, phn in tqdm(enumerate(encoded_test)):
                 mel, path = synthesis(model, phn, device, waveglow, i)
                 name = f'track={i} speed={1} energy={1}'
-                writer.add_audio('audio ' + name, path, sample_rate=16000)
+                writer.add_audio('audio ' + name, path, sample_rate=22050)
         for energy in [0.8, 1.2]:
             for i, phn in tqdm(enumerate(encoded_test)):
                 mel, path = synthesis(model, phn, device, waveglow, i, alpha_e=energy)
                 name = f'track={i} speed={1} energy={energy}'
-                writer.add_audio('audio ' + name, path, sample_rate=16000)
+                writer.add_audio('audio ' + name, path, sample_rate=22050)
         for speed in [0.8, 1.2]:
             for i, phn in tqdm(enumerate(encoded_test)):
                 mel, path = synthesis(model, phn, device, waveglow, i, speed=speed)
                 name = f'track={i} speed={2-speed} energy={1}'
-                writer.add_audio('audio ' + name, path, sample_rate=16000)
+                writer.add_audio('audio ' + name, path, sample_rate=22050)
                 # image = PIL.Image.open(plot_spectrogram_to_buf(mel.detach().cpu().numpy().squeeze(0).transpose(-1, -2)))
                 # self.writer.add_image('melspec ' + name, ToTensor()(image))
 

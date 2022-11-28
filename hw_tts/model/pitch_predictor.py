@@ -13,11 +13,11 @@ class Transpose(nn.Module):
     def forward(self, x):
         return x.transpose(self.dim_1, self.dim_2)
 
-class EnergyPredictor(nn.Module):
-    """ Energy Predictor """
+class PitchPredictor(nn.Module):
+    """ Pitch Predictor """
 
     def __init__(self, model_config):
-        super(EnergyPredictor, self).__init__()
+        super(PitchPredictor, self).__init__()
 
         self.input_size = model_config['encoder_dim']
         self.filter_size = model_config['duration_predictor_filter_size']
@@ -60,23 +60,23 @@ class EnergyPredictor(nn.Module):
         return out
 
 
-class Energy(nn.Module):
+class Pitch(nn.Module):
     def __init__(self, model_config):
-        super(Energy, self).__init__()
+        super(Pitch, self).__init__()
         self.embedding = nn.Embedding(model_config['duration_predictor_filter_size'], model_config['encoder_dim'])
-        self.energy_predictor = EnergyPredictor(model_config)
-        energy_min = np.load(ROOT_PATH / "data" / "energy_min.npy")
-        energy_max = np.load(ROOT_PATH / "data" / "energy_max.npy")
-        self.bins = torch.Tensor(np.linspace(energy_min - 1e-3, energy_max + 1e-3, num = 256))
+        self.pitch_predictor = PitchPredictor(model_config)
+    #     energy_min = np.load(ROOT_PATH / "data" / "energy_min.npy")
+    #     energy_max = np.load(ROOT_PATH / "data" / "energy_max.npy")
+    #     self.bins = torch.Tensor(np.linspace(energy_min - 1e-3, energy_max + 1e-3, num = 256))
 
-    def forward(self, x, alpha_e=1.0, target=None):
-        energy_predictor_output = self.energy_predictor(x)
-        if target is not None:
-            energy_quantized = torch.bucketize(target, self.bins.to(x.device))
-            energy_embedding = self.embedding(energy_quantized)
-            return energy_embedding, energy_predictor_output
-        else:
-            energy_predictor_output = ((energy_predictor_output + 0.5) * alpha_e).int()
-            energy_quantized = torch.bucketize(energy_predictor_output, self.bins.to(x.device))
-            energy_embedding = self.embedding(energy_quantized)
-            return energy_embedding, energy_predictor_output
+    # def forward(self, x, alpha_e=1.0, target=None):
+    #     energy_predictor_output = self.energy_predictor(x)
+    #     if target is not None:
+    #         energy_quantized = torch.bucketize(target, self.bins.to(x.device))
+    #         energy_embedding = self.embedding(energy_quantized)
+    #         return energy_embedding, energy_predictor_output
+    #     else:
+    #         energy_predictor_output = ((energy_predictor_output + 0.5) * alpha_e).int()
+    #         energy_quantized = torch.bucketize(energy_predictor_output, self.bins.to(x.device))
+    #         energy_embedding = self.embedding(energy_quantized)
+    #         return energy_embedding, energy_predictor_output

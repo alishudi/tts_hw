@@ -145,7 +145,7 @@ class Trainer(BaseTrainer):
         batch["duration_predicted"] = duration_predictor_output
         batch["energy_predicted"] = energy_predictor_output
         batch["mel_loss"], batch["duration_loss"], batch["energy_loss"] = self.criterion(**batch)
-        batch["energy_loss"] *= 0.2
+        batch["energy_loss"] *= 0.02
         batch["loss"] = batch["mel_loss"] + batch["duration_loss"] + batch["energy_loss"]
         if is_train:
             batch["loss"].backward()
@@ -212,4 +212,4 @@ class Trainer(BaseTrainer):
             self.writer.add_scalar(f"{metric_name}", metric_tracker.avg(metric_name))
 
     def _log_audio(self, name, audio_path):
-        self.writer.add_audio(name, audio_path, sample_rate=16000)
+        self.writer.add_audio(name, audio_path, sample_rate=22050)
