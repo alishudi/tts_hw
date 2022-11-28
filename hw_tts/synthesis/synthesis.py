@@ -2,7 +2,7 @@ import numpy as np
 import torch
 from waveglow.inference import inference
 
-def synthesis(model, text, device, waveglow, n, speed=1.0, energy=1.0):
+def synthesis(model, text, device, waveglow, n, speed=1.0, alpha_e=1.0):
     text = np.array(text)
     text = np.stack([text])
     src_pos = np.array([i+1 for i in range(text.shape[1])])

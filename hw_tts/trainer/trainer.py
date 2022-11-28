@@ -58,7 +58,7 @@ class Trainer(BaseTrainer):
 
 
         self.train_metrics = MetricTracker(
-            "loss", "grad norm", writer=self.writer #todo add mell loss?
+            "loss", "grad norm", "mel_loss", "duration_loss", "energy_loss",  writer=self.writer #todo add pitch loss?
         )
 
     @staticmethod
@@ -145,6 +145,7 @@ class Trainer(BaseTrainer):
         batch["duration_predicted"] = duration_predictor_output
         batch["energy_predicted"] = energy_predictor_output
         batch["mel_loss"], batch["duration_loss"], batch["energy_loss"] = self.criterion(**batch)
+        batch["energy_loss"] *= 0.02
         batch["loss"] = batch["mel_loss"] + batch["duration_loss"] + batch["energy_loss"]
         if is_train:
             batch["loss"].backward()
@@ -157,6 +158,9 @@ class Trainer(BaseTrainer):
                     self.lr_scheduler.step()
 
         metrics.update("loss", batch["loss"].item())
+        metrics.update("mel_loss", batch["mel_loss"].item())
+        metrics.update("duration_loss", batch["duration_loss"].item())
+        metrics.update("energy_loss", batch["energy_loss"].item())
         return batch
 
     def _progress(self, batch_idx):
