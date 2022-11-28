@@ -60,7 +60,7 @@ def main(config, out_file):
         #TODO add pitch
         for i, phn in tqdm(enumerate(encoded_test)):
                 mel, path = synthesis(model, phn, device, waveglow, i)
-                name = f'track={i} speed={1} energy={energy}'
+                name = f'track={i} speed={1} energy={1}'
                 writer.add_audio('audio ' + name, path, sample_rate=16000)
         for energy in [0.8, 1.2]:
             for i, phn in tqdm(enumerate(encoded_test)):
