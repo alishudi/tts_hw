@@ -14,13 +14,16 @@ delete tests
 mb audio folder and utils from fastspeech isnt needed
 Default batch_size=16
 
-add calc_energies to installation
+add calc_pitches to installation
+
 
 # report 
 changed mhead attention to pre norm, nothing changed
 changed all other attentions to pre norm, didnt notice any changes
 
 copied parts of code for waveglow and preprocessing from https://github.com/xcmyz/FastSpeech.git (same parts what were used in the seminar)
+
+pitch without cwt because only one librrary has icwt, and it has almost no documentation
 ## Installation guide
 
 

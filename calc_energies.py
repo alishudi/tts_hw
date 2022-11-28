@@ -45,8 +45,8 @@ def calc_energies():
         if torch.max(energy) > energy_max:
             energy_max = torch.max(energy)
 
-    np.save(ROOT_PATH / "data" / "energy_min.npy", energy_min)
-    np.save(ROOT_PATH / "data" / "energy_max.npy", energy_max)
+    np.save(ROOT_PATH / "small data" / "energy_min.npy", energy_min)
+    np.save(ROOT_PATH / "small data" / "energy_max.npy", energy_max)
 
 
 if __name__ == "__main__":

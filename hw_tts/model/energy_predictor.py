@@ -65,8 +65,8 @@ class Energy(nn.Module):
         super(Energy, self).__init__()
         self.embedding = nn.Embedding(model_config['duration_predictor_filter_size'], model_config['encoder_dim'])
         self.energy_predictor = EnergyPredictor(model_config)
-        energy_min = np.load(ROOT_PATH / "data" / "energy_min.npy")
-        energy_max = np.load(ROOT_PATH / "data" / "energy_max.npy")
+        energy_min = np.load(ROOT_PATH / "small data" / "energy_min.npy")
+        energy_max = np.load(ROOT_PATH / "small data" / "energy_max.npy")
         self.bins = torch.Tensor(np.linspace(energy_min - 1e-3, energy_max + 1e-3, num = 256))
 
     def forward(self, x, alpha_e=1.0, target=None):
