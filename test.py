@@ -78,7 +78,7 @@ def main(config, out_file):
                 writer.add_audio('audio ' + name, path, sample_rate=22050)
         for three in [0.8, 1.2]:
             for i, phn in tqdm(enumerate(encoded_test)):
-                mel, path = synthesis(model, phn, device, waveglow, i, speed=three, alpha_e=three, alpha_p=three)
+                mel, path = synthesis(model, phn, device, waveglow, i, speed=(2-three), alpha_e=three, alpha_p=three)
                 name = f'track={i} speed={three} energy={three} pitch={three}'
                 writer.add_audio('audio ' + name, path, sample_rate=22050)
 
