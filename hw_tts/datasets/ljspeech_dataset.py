@@ -60,6 +60,7 @@ class LJspeechDataset(Dataset):
             duration = torch.from_numpy(duration)
             mel_gt_target = torch.from_numpy(mel_gt_target)
             energy = torch.from_numpy(energy)
+            pitch = torch.from_numpy(pitch)
 
             buffer.append({"src_seq": character, "duration_predictor_target": duration,
                         "mel_target": mel_gt_target, "energy": energy, "pitch": pitch})
