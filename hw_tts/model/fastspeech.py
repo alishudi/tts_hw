@@ -8,7 +8,6 @@ from hw_tts.model.energy_predictor import Energy
 from hw_tts.model.pitch_predictor import Pitch
 
 
-#todo mb move to separate file
 def get_non_pad_mask(model_config, seq):
     assert seq.dim() == 2
     return seq.ne(model_config['PAD']).type(torch.float).unsqueeze(-1)
