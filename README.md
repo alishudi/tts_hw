@@ -24,6 +24,8 @@ changed all other attentions to pre norm, didnt notice any changes
 copied parts of code for waveglow and preprocessing from https://github.com/xcmyz/FastSpeech.git (same parts what were used in the seminar)
 
 pitch without cwt because only one librrary has icwt, and it has almost no documentation
+
+after adding energy model started to generate weird sound between 'math' and 'science' in second test utterance.
 ## Installation guide
 
 
