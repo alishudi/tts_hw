@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 def pad_1D_tensor(inputs):
 
     def pad_data(x, length):
+        print(x.shape)
         x_padded = F.pad(x, (0, length - x.shape[0]))
         return x_padded
 
