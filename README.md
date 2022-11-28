@@ -40,7 +40,7 @@ Or you could try to download archives from https://drive.google.com/file/d/1U-bB
 
 ## Testing
 
-Download model from  to default_test_model/checkpoint.pth 
+Download model from https://drive.google.com/file/d/1eqR-S4Jdzoa812qPylzo8TSaDg1VSTDz/view?usp=sharing to default_test_model/checkpoint.pth 
 
 To test model (will generate all the needed audio samples for calculating the MOS, if you want to use different sentences just replace default sentences in test.py with them):
 ```shell
