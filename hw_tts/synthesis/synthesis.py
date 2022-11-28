@@ -12,7 +12,7 @@ def synthesis(model, text, device, waveglow, n, speed=1.0, alpha_e=1.0, alpha_p=
     
     with torch.no_grad():
         mel = model.forward(sequence, src_pos, alpha=speed, alpha_e=alpha_e, alpha_p=alpha_p)
-    path = f"results/s={speed}_{n}_e={e}_p={p}.wav"
+    path = f"results/s={speed}_{n}_e={alpha_e}_p={alpha_p}.wav"
     inference(mel.contiguous().transpose(1, 2), waveglow, path)
     return mel, path
 
