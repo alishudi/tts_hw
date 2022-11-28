@@ -53,6 +53,8 @@ class LJspeechDataset(Dataset):
             energy = np.load(os.path.join(
                 "./data/energies", str(i)+".npy"))
             energy = energy.squeeze(0)
+            pitch = np.load(os.path.join(
+                "./data/pitches", str(i)+".npy"))
 
             character = torch.from_numpy(character)
             duration = torch.from_numpy(duration)
@@ -60,7 +62,7 @@ class LJspeechDataset(Dataset):
             energy = torch.from_numpy(energy)
 
             buffer.append({"src_seq": character, "duration_predictor_target": duration,
-                        "mel_target": mel_gt_target, "energy": energy})
+                        "mel_target": mel_gt_target, "energy": energy, "pitch": pitch})
 
         end = time.perf_counter()
         print("cost {:.2f}s to load all data into buffer.".format(end-start))

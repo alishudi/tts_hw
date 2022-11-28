@@ -104,7 +104,7 @@ class Decoder(nn.Module):
             dropout=model_config['dropout']
         ) for _ in range(n_layers)])
 
-    def forward(self, enc_seq, enc_pos, energy_emb, return_attns=False):
+    def forward(self, enc_seq, enc_pos, energy_emb, pitch_emb, return_attns=False):
 
         dec_slf_attn_list = []
 
@@ -113,7 +113,7 @@ class Decoder(nn.Module):
         non_pad_mask = get_non_pad_mask(self.model_config, enc_pos)
 
         # -- Forward
-        dec_output = enc_seq + self.position_enc(enc_pos) + energy_emb
+        dec_output = enc_seq + self.position_enc(enc_pos) + energy_emb + pitch_emb
 
         for dec_layer in self.layer_stack:
             dec_output, dec_slf_attn = dec_layer(
@@ -155,19 +155,20 @@ class FastSpeech2(BaseModel):
         mask = mask.unsqueeze(-1).expand(-1, -1, mel_output.size(-1))
         return mel_output.masked_fill(mask, 0.)
 
-    def forward(self, src_seq, src_pos, mel_pos=None, mel_max_len=None, duration=None, energy=None, alpha=1.0, alpha_e=1, **batch):
+    def forward(self, src_seq, src_pos, mel_pos=None, mel_max_len=None, duration=None, energy=None, pitch=None, alpha=1.0, alpha_e=1, alpha_p=1, **batch):
         x, non_pad_mask = self.encoder(src_seq, src_pos)
         if self.training:
             output, duration_predictor_output, alignment = self.length_regulator(x, alpha, duration, mel_max_len)
-            energy_embedding, energy_predictor_output = self.energy_predictor(output, alpha_e=alpha_e, target=alignment @ energy)
-            # pitch_embedding, pitch_predictor_output = self.pitch_predictor(output, alpha_e=alpha_e, target=alignment @ pitch)
-            output = self.decoder(output, mel_pos, energy_embedding)
+            energy_embedding, energy_predictor_output = self.energy_predictor(output, alpha_e=alpha_e, target=energy)
+            pitch_embedding, pitch_predictor_output = self.pitch_predictor(output, alpha_p=alpha_p, target=pitch)
+            output = self.decoder(output, mel_pos, energy_embedding, pitch_embedding)
             output = self.mask_tensor(output, mel_pos, mel_max_len)
             output = self.mel_linear(output)
-            return output, duration_predictor_output, energy_predictor_output
+            return output, duration_predictor_output, energy_predictor_output, pitch_predictor_output
         else:
             output, mel_pos, alignment = self.length_regulator(x, alpha)
             energy_embedding, _ = self.energy_predictor(output, alpha_e=alpha_e)
-            output = self.decoder(output, mel_pos, energy_embedding)
+            pitch_embedding, _ = self.pitch_predictor(output, alpha_p=alpha_p)
+            output = self.decoder(output, mel_pos, energy_embedding, pitch_embedding)
             output = self.mel_linear(output)
             return output

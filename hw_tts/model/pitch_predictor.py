@@ -69,14 +69,14 @@ class Pitch(nn.Module):
         pitch_max = np.load(ROOT_PATH / "data" / "pitch_max.npy")
         self.bins = torch.Tensor(np.linspace(pitch_min - 1e-3, pitch_max + 1e-3, num = 256)) # pitches are already in log scale
  
-    # def forward(self, x, alpha_e=1.0, target=None):
-    #     energy_predictor_output = self.energy_predictor(x)
-    #     if target is not None:
-    #         energy_quantized = torch.bucketize(target, self.bins.to(x.device))
-    #         energy_embedding = self.embedding(energy_quantized)
-    #         return energy_embedding, energy_predictor_output
-    #     else:
-    #         energy_predictor_output = ((energy_predictor_output + 0.5) * alpha_e).int()
-    #         energy_quantized = torch.bucketize(energy_predictor_output, self.bins.to(x.device))
-    #         energy_embedding = self.embedding(energy_quantized)
-    #         return energy_embedding, energy_predictor_output
+    def forward(self, x, alpha_p=1.0, target=None):
+        pitch_predictor_output = self.pitch_predictor(x)
+        if target is not None:
+            pitch_quantized = torch.bucketize(target, self.bins.to(x.device))
+            pitch_embedding = self.embedding(pitch_quantized)
+            return pitch_embedding, pitch_predictor_output
+        else:
+            pitch_predictor_output = ((pitch_predictor_output + 0.5) * alpha_p).int()
+            pitch_quantized = torch.bucketize(pitch_predictor_output, self.bins.to(x.device))
+            pitch_embedding = self.embedding(pitch_quantized)
+            return pitch_embedding, pitch_predictor_output
