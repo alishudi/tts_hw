@@ -45,6 +45,7 @@ def calc_pitches():
     for i in tqdm(range(len(text))):
         audio_tensor, sr = torchaudio.load(waw_paths[i])
         audio_tensor = audio_tensor[0:1, :].numpy().squeeze(0).astype('double')
+        #with actual sr shape was too long, with this shape they should be equal, not sure if that is correct, but should be better than just cutting
         _f0, t = pw.dio(audio_tensor, 51180)   # raw pitch extractor
         pitch = pw.stonemask(audio_tensor, _f0, t, 51180) # pitch refinement
         pitch = interpolation(pitch) #we use linear interpolation to fill the unvoiced frame in pitch contour

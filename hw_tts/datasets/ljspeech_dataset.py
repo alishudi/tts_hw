@@ -55,6 +55,7 @@ class LJspeechDataset(Dataset):
             energy = energy.squeeze(0)
             pitch = np.load(os.path.join(
                 "./data/pitches", str(i)+".npy"))
+            pitch = pitch[:energy.shape[0]]
 
             character = torch.from_numpy(character)
             duration = torch.from_numpy(duration)
