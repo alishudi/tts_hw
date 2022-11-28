@@ -145,7 +145,7 @@ class Trainer(BaseTrainer):
         batch["duration_predicted"] = duration_predictor_output
         batch["energy_predicted"] = energy_predictor_output
         batch["mel_loss"], batch["duration_loss"], batch["energy_loss"] = self.criterion(**batch)
-        batch["energy_loss"] *= 0.02
+        batch["energy_loss"] *= 0.01
         batch["loss"] = batch["mel_loss"] + batch["duration_loss"] + batch["energy_loss"]
         if is_train:
             batch["loss"].backward()

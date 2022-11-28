@@ -56,8 +56,8 @@ def calc_pitches():
         if np.max(pitch) > pitch_max:
             pitch_max = np.max(pitch)
 
-    np.save(ROOT_PATH / "data" / "pitch_min.npy", pitch_min)
-    np.save(ROOT_PATH / "data" / "pitch_max.npy", pitch_max)
+    np.save(ROOT_PATH / "data" / "pitch_min.npy", np.log(pitch_min))
+    np.save(ROOT_PATH / "data" / "pitch_max.npy", np.log(pitch_max))
 
 
 
