@@ -38,14 +38,15 @@ gdown https://drive.google.com/u/0/uc?id=1-EdH0t0loc6vPiuVtXdhsDtzygWNSNZx
 mv train.txt data/
 
 gdown https://drive.google.com/u/0/uc?id=1WsibBTsuRg_SF2Z6L6NFRTT-NjEy1oTx
-mkdir -p waveglow/pretrained_model/
-mv waveglow_256channels_ljs_v2.pt waveglow/pretrained_model/waveglow_256channels.pt
+mkdir -p pretrained_model/
+mkdir -p data/waveglow/
+mv waveglow_256channels_ljs_v2.pt pretrained_model/waveglow_256channels.pt
 gdown https://drive.google.com/u/0/uc?id=1cJKJTmYd905a-9GFoo5gKjzhKjUVj83j
 tar -xvf mel.tar.gz
 
 wget https://github.com/xcmyz/FastSpeech/raw/master/alignments.zip
 unzip alignments.zip >> /dev/null
-mv waveglow data/
+mv pretrained_model data/waveglow/
 mv alignments data/
 mv mels data/
 rm mel.tar.gz
