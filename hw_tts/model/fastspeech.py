@@ -5,7 +5,7 @@ from hw_tts.base import BaseModel
 from hw_tts.model.duration_predictor import LengthRegulator
 from hw_tts.model.fftblock import FFTBlock
 from hw_tts.model.energy_predictor import Energy
-
+from hw_tts.model.pitch_predictor import Pitch
 
 
 #todo mb move to separate file
@@ -145,6 +145,7 @@ class FastSpeech2(BaseModel):
         self.encoder = Encoder(model_config)
         self.length_regulator = LengthRegulator(model_config)
         self.energy_predictor = Energy(model_config)
+        self.pitch_predictor = Pitch(model_config)
         self.decoder = Decoder(model_config)
 
         self.mel_linear = nn.Linear(model_config['decoder_dim'], model_config['num_mels'])
