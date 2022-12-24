@@ -144,7 +144,7 @@ if __name__ == "__main__":
         "-s",
         "--sentences",
         default=None,
-        type=int,
+        type=str,
         help="path to txt file with testing senteces, one sentence in line",
     )
 
