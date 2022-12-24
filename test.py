@@ -165,4 +165,7 @@ if __name__ == "__main__":
         with Path(args.config).open() as f:
             config.config.update(json.load(f))
 
+    print(args)
+    print(args.sentences)
+
     main(config, args.output, args.senteces)
