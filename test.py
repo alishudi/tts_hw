@@ -47,6 +47,7 @@ def main(config, out_file, sentences):
     if sentences is not None:
         with open(sentences, 'r', encoding='utf-8') as f:
             test_samples = f.readlines()
+        print(test_samples[0])
     else:
         test_samples = [
                 "A defibrillator is a device that gives a high energy electric shock to the heart of someone who is in cardiac arrest",
@@ -142,7 +143,7 @@ if __name__ == "__main__":
     args.add_argument(
         "-s",
         "--sentences",
-        default=1,
+        default=None,
         type=int,
         help="path to txt file with testing senteces, one sentence in line",
     )
