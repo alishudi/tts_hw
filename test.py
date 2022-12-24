@@ -19,7 +19,7 @@ from hw_tts.logger import get_visualizer
 DEFAULT_CHECKPOINT_PATH = ROOT_PATH / "default_test_model" / "checkpoint.pth"
 
 
-def main(config, out_file):
+def main(config, out_file, sentences):
     logger = config.get_logger("test")
 
     # define cpu or gpu if possible
@@ -44,12 +44,15 @@ def main(config, out_file):
     waveglow = get_WaveGlow()
     waveglow = waveglow.cuda()
 
-    #TODO add custom test sample support
-    test_samples = [
-            "A defibrillator is a device that gives a high energy electric shock to the heart of someone who is in cardiac arrest",
-            "Massachusetts Institute of Technology may be best known for its math, science and engineering education", 
-            "Wasserstein distance or Kantorovich Rubinstein metric is a distance function defined between probability distributions on a given metric space"
-            ]
+    if sentences is not None:
+        with open(sentences, 'r', encoding='utf-8') as f:
+            test_samples = f.readlines()
+    else:
+        test_samples = [
+                "A defibrillator is a device that gives a high energy electric shock to the heart of someone who is in cardiac arrest",
+                "Massachusetts Institute of Technology may be best known for its math, science and engineering education", 
+                "Wasserstein distance or Kantorovich Rubinstein metric is a distance function defined between probability distributions on a given metric space"
+                ]
     encoded_test = list(text_to_sequence(test, ['english_cleaners']) for test in test_samples)
 
     logger = config.get_logger("trainer")
@@ -136,6 +139,13 @@ if __name__ == "__main__":
         type=int,
         help="Number of workers for test dataloader",
     )
+    args.add_argument(
+        "-s",
+        "--sentences",
+        default=1,
+        type=int,
+        help="path to txt file with testing senteces, one sentence in line",
+    )
 
     args = args.parse_args()
 
@@ -154,9 +164,4 @@ if __name__ == "__main__":
         with Path(args.config).open() as f:
             config.config.update(json.load(f))
 
-
-    # assert config.config.get("data", {}).get("test", None) is not None
-    # config["data"]["test"]["batch_size"] = args.batch_size
-    # config["data"]["test"]["n_jobs"] = args.jobs
-
-    main(config, args.output)
+    main(config, args.output, args.senteces)
